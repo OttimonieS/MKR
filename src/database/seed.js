@@ -3,9 +3,7 @@
  * @module database/seed
  */
 
-require('dotenv').config();
 const crypto = require('crypto');
-const bcrypt = require('bcryptjs');
 const { createDatabaseConnection, resolveDatabasePath, initializeSchema } = require('./db');
 const { USER_ROLES } = require('../utils/constants');
 const { getJakartaTimestamp } = require('../utils/rentalMath');
@@ -26,13 +24,16 @@ function seedAdmin(db, options = {}) {
 
   const existing = db
     .prepare(
-      `SELECT u.user_id, u.email, a.name
+      `SELECT u.user_id, u.email, u.password, a.name
        FROM users u JOIN admin a ON a.admin_id = u.user_id
        WHERE u.email = ?`
     )
     .get(email);
 
   if (existing) {
+    if (typeof existing.password === 'string' && existing.password.startsWith('$2')) {
+      db.prepare('UPDATE users SET password = ? WHERE user_id = ?').run(password, existing.user_id);
+    }
     return {
       created: false,
       admin: { id: existing.user_id, email: existing.email, fullName: existing.name },
@@ -40,13 +41,12 @@ function seedAdmin(db, options = {}) {
   }
 
   const userId = crypto.randomUUID();
-  const passwordHash = bcrypt.hashSync(password, 10);
   const createdAt = getJakartaTimestamp();
 
   db.transaction(() => {
     db.prepare(
       `INSERT INTO users (user_id, email, password, role, created_at) VALUES (?, ?, ?, ?, ?)`
-    ).run(userId, email, passwordHash, USER_ROLES.ADMIN, createdAt);
+    ).run(userId, email, password, USER_ROLES.ADMIN, createdAt);
     db.prepare(`INSERT INTO admin (admin_id, name) VALUES (?, ?)`).run(userId, fullName);
   })();
 

@@ -3,7 +3,6 @@
  * @module server
  */
 
-require('dotenv').config();
 const { createDatabaseConnection, initializeSchema } = require('./src/database/db');
 const { createApp } = require('./src/app');
 

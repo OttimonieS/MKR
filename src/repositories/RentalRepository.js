@@ -424,38 +424,6 @@ class RentalRepository {
   }
 
   /**
-   * Memeriksa apakah file bukti pembayaran tertentu dimiliki oleh penyewa tertentu
-   * (baik dari transaksi penyewaan awal maupun dari riwayat perpanjangan miliknya).
-   *
-   * @param {string} filename - Nama file dasar bukti pembayaran.
-   * @param {string} tenantUserId - UUID penyewa yang meminta akses.
-   * @returns {boolean} True jika file merupakan milik transaksi penyewa tersebut.
-   */
-  isPaymentProofOwnedByTenant(filename, tenantUserId) {
-    const direct = this.db
-      .prepare(
-        `SELECT 1 FROM rentals
-         WHERE payment_proof = ? AND tenant_id = ?
-         LIMIT 1`
-      )
-      .get(filename, tenantUserId);
-
-    if (direct) {
-      return true;
-    }
-
-    const fromExt = this.db
-      .prepare(
-        `SELECT 1 FROM rental_extensions re
-         JOIN rentals r ON r.rental_id = re.rental_id
-         WHERE re.payment_proof = ? AND r.tenant_id = ?
-         LIMIT 1`
-      )
-      .get(filename, tenantUserId);
-
-    return Boolean(fromExt);
-  }
-  /**
    * Mencatat riwayat perpanjangan sewa baru, mempertahankan previous_end_date di histori,
    * memperbarui end_date pada tabel rentals, dan memastikan bebas bentrok jadwal secara atomik.
    *

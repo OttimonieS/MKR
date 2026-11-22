@@ -112,7 +112,6 @@ function createApp({
     garage: new GarageController(garageService),
     rental: new RentalController({
       rentalService,
-      rentalRepository,
       uploadDir: resolvedUploadDir,
     }),
     report: new ReportController(reportService),

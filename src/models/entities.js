@@ -55,7 +55,7 @@ class User {
   /**
    * Mengambil hash password internal khusus verifikasi autentikasi.
    *
-   * @returns {string|null} Hash bcrypt yang tersimpan.
+   * @returns {string|null} Password yang tersimpan.
    */
   getPasswordHash() {
     return this._passwordHash;

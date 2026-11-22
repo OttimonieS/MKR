@@ -85,26 +85,10 @@ function validatePassword(password) {
   return password;
 }
 
-/**
- * Memformat nilai nominal menjadi string mata uang Rupiah (IDR).
- *
- * @param {number} amount - Nominal dalam Rupiah.
- * @returns {string} String terformat Rupiah (contoh: "Rp 2.500.000").
- */
-function formatCurrencyIDR(amount) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(Number(amount) || 0);
-}
-
 module.exports = {
   validateEmail,
   validateNik,
   validateFullName,
   validatePhone,
   validatePassword,
-  formatCurrencyIDR,
 };

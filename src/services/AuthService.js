@@ -4,7 +4,6 @@
  */
 
 const crypto = require('crypto');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const {
   APPROVAL_STATUS,
@@ -50,15 +49,15 @@ class AuthService {
 
   /**
    * Mendaftarkan akun Penyewa (Tenant) baru dengan status verifikasi awal PENDING.
-   * Memastikan keunikan email dan NIK 16 digit serta mengenkripsi password menggunakan bcrypt.
+   * Memastikan keunikan email dan NIK 16 digit.
    *
    * @param {Object} payload - Data pendaftaran penyewa.
    * @param {string} payload.nik - NIK 16 digit (Nomor KTP).
    * @param {string} payload.fullName - Nama lengkap sesuai KTP.
    * @param {string} payload.phone - Nomor telepon aktif.
    * @param {string} payload.email - Email unik yang digunakan sebagai username.
-   * @param {string} payload.password - Password plaintext (di-hash sebelum disimpan).
-   * @returns {import('../models/Tenant')} Entitas Tenant yang berhasil terdaftar.
+   * @param {string} payload.password - Password akun penyewa.
+   * @returns {import('../models/entities').Tenant} Entitas Tenant yang berhasil terdaftar.
    * @throws {ValidationError} Jika ada data input yang tidak memenuhi aturan validasi.
    * @throws {ConflictError} Jika email atau NIK sudah terdaftar di database.
    */
@@ -77,13 +76,12 @@ class AuthService {
       throw new ConflictError('NIK sudah terdaftar dalam sistem.');
     }
 
-    const passwordHash = bcrypt.hashSync(validPassword, 10);
     const createdAt = getJakartaTimestamp(this.clock());
 
     return this.userRepository.createTenantUser({
       id: crypto.randomUUID(),
       email: validEmail,
-      passwordHash,
+      passwordHash: validPassword,
       nik: validNik,
       fullName: validFullName,
       phone: validPhone,
@@ -96,8 +94,8 @@ class AuthService {
    * Mengautentikasi akun Admin atau Penyewa menggunakan email dan password.
    *
    * @param {string} email - Alamat email pengguna.
-   * @param {string} password - Password plaintext dari form login.
-   * @returns {{ user: import('../models/Admin')|import('../models/Tenant'), token: string }} Entitas pengguna dan token JWT.
+   * @param {string} password - Password dari form login.
+   * @returns {{ user: import('../models/entities').Admin|import('../models/entities').Tenant, token: string }} Entitas pengguna dan token JWT.
    * @throws {ValidationError} Jika email atau password kosong.
    * @throws {AuthenticationError} Jika email tidak ditemukan atau password tidak cocok.
    */
@@ -112,8 +110,7 @@ class AuthService {
       throw new AuthenticationError('Email atau password tidak valid.');
     }
 
-    const passwordMatches = bcrypt.compareSync(String(password), user.getPasswordHash());
-    if (!passwordMatches) {
+    if (String(password) !== user.getPasswordHash()) {
       throw new AuthenticationError('Email atau password tidak valid.');
     }
 

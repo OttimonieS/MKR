@@ -136,7 +136,7 @@ class UserRepository {
    * @param {Object} data - Payload penyimpanan penyewa baru.
    * @param {string} data.id - UUID pengguna baru.
    * @param {string} data.email - Email ternormalisasi huruf kecil.
-   * @param {string} data.passwordHash - Hash password bcrypt.
+   * @param {string} data.passwordHash - Password akun pengguna.
    * @param {string} data.nik - NIK 16 digit.
    * @param {string} data.fullName - Nama lengkap penyewa.
    * @param {string} data.phone - Nomor telepon penyewa.

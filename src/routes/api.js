@@ -27,17 +27,6 @@ function createApiRouter({ controllers, authMiddleware, uploadPaymentProof }) {
   const adminOnly = requireRole(USER_ROLES.ADMIN);
   const tenantOnly = requireRole(USER_ROLES.TENANT);
 
-  // Health check
-  router.get('/health', (_req, res) => {
-    res.status(200).json({
-      success: true,
-      data: {
-        status: 'ok',
-        service: 'Garage Rental Management System',
-      },
-    });
-  });
-
   // Autentikasi & Sesi
   router.post('/auth/register', auth.register);
   router.post('/auth/login', auth.login);

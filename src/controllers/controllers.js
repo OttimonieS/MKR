@@ -76,8 +76,6 @@ class AuthController {
 
       res.cookie(AUTH_COOKIE_NAME, token, {
         httpOnly: true,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
         maxAge: 8 * 60 * 60 * 1000,
         path: '/',
       });
@@ -104,8 +102,6 @@ class AuthController {
   logout(_req, res) {
     res.clearCookie(AUTH_COOKIE_NAME, {
       httpOnly: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
       path: '/',
     });
 
@@ -321,12 +317,10 @@ class RentalController {
    *
    * @param {Object} deps - Dependensi yang diinjeksikan.
    * @param {import('../services/RentalService')} deps.rentalService - Layanan bisnis penyewaan.
-   * @param {import('../repositories/RentalRepository')} deps.rentalRepository - Repository untuk cek kepemilikan file bukti bayar.
    * @param {string} deps.uploadDir - Path absolut direktori penyimpanan bukti pembayaran.
    */
-  constructor({ rentalService, rentalRepository, uploadDir }) {
+  constructor({ rentalService, uploadDir }) {
     this.rentalService = rentalService;
-    this.rentalRepository = rentalRepository;
     this.uploadDir = uploadDir;
 
     this.getConfig = this.getConfig.bind(this);

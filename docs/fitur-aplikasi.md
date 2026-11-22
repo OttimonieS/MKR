@@ -13,7 +13,7 @@ Browser (HTML5 + CSS3 + Vanilla JS / Fetch API)
    │
    ▼
 Express Router (src/routes/api.js)
-   │  └─ Middleware Keamanan (src/middleware/auth.js & common.js: JWT HttpOnly, RBAC, sameOriginGuard, Multer + Magic Bytes)
+   │  └─ Middleware (src/middleware/auth.js & common.js: JWT Cookie, Role Check, Multer Upload, Error Handler)
    ▼
 Controllers (src/controllers/controllers.js) → Mengelola HTTP request & response JSON
    │
@@ -36,12 +36,11 @@ SQLite Database (src/database/db.js)         → 8 tabel relasional sesuai ERD d
 
 1. **Registrasi Penyewa** (`/tenant/register.html` → `POST /api/auth/register`)
    - Input wajib: NIK (16 digit angka unik), Nama Lengkap, Nomor Telepon, Email unik (sebagai username), dan Password (minimal 6 karakter).
-   - Password di-hash satu arah menggunakan `bcryptjs` (salt rounds = 10) sebelum disimpan.
    - Status awal pendaftar selalu `PENDING`.
    - Tidak ada fitur registrasi Admin; akun Admin dibuat melalui seeder (`npm run db:seed`).
 2. **Login & Logout** (`/index.html` → `POST /api/auth/login`, `POST /api/auth/logout`)
    - Mendukung login Admin dan Penyewa menggunakan email dan password.
-   - Token JWT disimpan pada cookie `HttpOnly` (`SameSite=Lax`) sehingga aman dari akses JavaScript lintas skrip.
+   - Token JWT disimpan pada cookie sesi.
    - Sistem mengarahkan pengguna otomatis ke Dashboard Admin (`/admin/dashboard.html`) atau Dashboard Penyewa (`/tenant/dashboard.html`).
 3. **Otorisasi Berbasis Role & Status Verifikasi**
    - Setiap endpoint backend dilindungi middleware `authenticate`, `requireRole(...)`, dan `requireApprovedTenant`.
