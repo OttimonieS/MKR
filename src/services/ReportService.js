@@ -133,29 +133,6 @@ class ReportService {
     this.garageRepository.syncStatuses(todayDate);
     return this.reportRepository.getTenantReport(filters);
   }
-
-  /**
-   * Mengambil ringkasan metrik KPI aktual untuk Dashboard Admin.
-   *
-   * @returns {Object} Metrik Dashboard Admin dari database.
-   */
-  getAdminDashboardStats() {
-    const todayDate = getTodayInJakarta(this.clock());
-    this.garageRepository.syncStatuses(todayDate);
-    return this.reportRepository.getAdminDashboardStats(todayDate);
-  }
-
-  /**
-   * Mengambil ringkasan metrik KPI aktual untuk Dashboard Penyewa.
-   *
-   * @param {string} tenantUserId - UUID pengguna penyewa yang sedang login.
-   * @returns {Object} Metrik Dashboard Penyewa dari database.
-   */
-  getTenantDashboardStats(tenantUserId) {
-    const todayDate = getTodayInJakarta(this.clock());
-    this.garageRepository.syncStatuses(todayDate);
-    return this.reportRepository.getTenantDashboardStats(tenantUserId, todayDate);
-  }
 }
 
 module.exports = ReportService;

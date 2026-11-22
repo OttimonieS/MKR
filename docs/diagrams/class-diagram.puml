@@ -148,8 +148,6 @@ class ReportService {
     +getDailyReport(year: Number, month: Number, includeEmptyDays: Boolean): Object
     +getGarageTypeReport(filters: Object): Object
     +getTenantReport(filters: Object): Object
-    +getAdminDashboardStats(): Object
-    +getTenantDashboardStats(tenantUserId: String): Object
 }
 
 User <|-- Tenant

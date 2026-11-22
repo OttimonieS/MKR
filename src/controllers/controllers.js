@@ -578,35 +578,10 @@ class ReportController {
    */
   constructor(reportService) {
     this.reportService = reportService;
-    this.getDashboard = this.getDashboard.bind(this);
     this.getMonthlyReport = this.getMonthlyReport.bind(this);
     this.getDailyReport = this.getDailyReport.bind(this);
     this.getGarageTypeReport = this.getGarageTypeReport.bind(this);
     this.getTenantReport = this.getTenantReport.bind(this);
-  }
-
-  /**
-   * Menangani GET /api/reports/dashboard untuk mengembalikan KPI aktual sesuai role pengguna.
-   *
-   * @param {import('express').Request} req - Request terautentikasi.
-   * @param {import('express').Response} res - Response JSON metrik dashboard.
-   * @param {import('express').NextFunction} next - Callback penerus error.
-   * @returns {void}
-   */
-  getDashboard(req, res, next) {
-    try {
-      const data =
-        req.user.role === USER_ROLES.ADMIN
-          ? this.reportService.getAdminDashboardStats()
-          : this.reportService.getTenantDashboardStats(req.user.id);
-
-      res.status(200).json({
-        success: true,
-        data,
-      });
-    } catch (err) {
-      next(err);
-    }
   }
 
   /**

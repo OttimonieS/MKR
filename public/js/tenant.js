@@ -1,5 +1,5 @@
 /**
- * Modul frontend Penyewa (Tenant) untuk Dashboard, Riwayat Sewa, Modal Detail Transaksi, dan Profil.
+ * Modul frontend Penyewa (Tenant) untuk Riwayat Sewa, Modal Detail Transaksi, dan Profil.
  * @module frontend/tenant
  */
 
@@ -50,98 +50,6 @@ async function openTenantRentalDetailModal(rentalId) {
     body.innerHTML = window.AppUtils.buildRentalDetailHtml(res.data);
   } catch (err) {
     body.innerHTML = `<div class="alert alert-error">${window.AppUtils.escapeHtml(err.message)}</div>`;
-  }
-}
-
-/**
- * Menginisialisasi halaman Dashboard Penyewa (public/tenant/dashboard.html).
- *
- * @returns {Promise<void>}
- */
-async function initTenantDashboardPage() {
-  const statsContainer = document.getElementById('tenantDashboardStats');
-  if (!statsContainer) {
-    return;
-  }
-
-  const user = await window.AppUtils.requirePageAuth('TENANT');
-  if (!user) {
-    return;
-  }
-
-  renderTenantStatusNotice(user, 'tenantStatusBanner');
-
-  const newRentalCta = document.getElementById('dashboardNewRentalBtn');
-  if (newRentalCta && user.approvalStatus !== 'APPROVED') {
-    newRentalCta.classList.add('hidden');
-  }
-
-  try {
-    const [statsRes, rentalsRes] = await Promise.all([
-      window.AppUtils.apiRequest('/api/reports/dashboard'),
-      window.AppUtils.apiRequest('/api/rentals/my'),
-    ]);
-
-    const s = statsRes.data;
-    document.getElementById('tenantTodayLabel').textContent =
-      `Tanggal Hari Ini (WIB): ${window.AppUtils.formatDateId(s.todayDate)}`;
-
-    statsContainer.innerHTML = `
-      <div class="stat-card">
-        <div class="stat-label">Status Verifikasi</div>
-        <div class="stat-value" style="font-size:18px;margin-top:4px;">${window.AppUtils.renderStatusBadge(user.approvalStatus)}</div>
-        <div class="stat-sub">NIK: ${window.AppUtils.escapeHtml(user.nik)}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Garasi Aktif Disewa</div>
-        <div class="stat-value">${s.activeRentals}</div>
-        <div class="stat-sub">Dapat menyewa lebih dari satu garasi</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Total Transaksi Sewa</div>
-        <div class="stat-value">${s.totalRentals}</div>
-        <div class="stat-sub">Perpanjangan: ${s.totalExtensions}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Total Pengeluaran</div>
-        <div class="stat-value" style="font-size:20px;">${window.AppUtils.formatRupiah(s.totalSpent)}</div>
-        <div class="stat-sub">Sewa: ${window.AppUtils.formatRupiah(s.rentalSpent)}</div>
-      </div>
-    `;
-
-    const tbody = document.getElementById('tenantRecentRentalsBody');
-    const rentals = rentalsRes.data.slice(0, 10);
-
-    if (rentals.length === 0) {
-      tbody.innerHTML =
-        '<tr><td colspan="7" class="empty-state">Anda belum memiliki transaksi penyewaan garasi.</td></tr>';
-      return;
-    }
-
-    tbody.innerHTML = rentals
-      .map(
-        (r) => `
-        <tr>
-          <td class="mono">${window.AppUtils.escapeHtml(r.garageId)}</td>
-          <td>${window.AppUtils.escapeHtml(r.vehicleTypeLabel)} — ${window.AppUtils.escapeHtml(r.brand)} ${window.AppUtils.escapeHtml(r.model)}</td>
-          <td>${window.AppUtils.formatDateId(r.startDate)}</td>
-          <td>${window.AppUtils.formatDateId(r.endDate)}</td>
-          <td class="num">${window.AppUtils.formatRupiah(r.grandTotalAmount)}</td>
-          <td>${window.AppUtils.renderStatusBadge(r.status)}</td>
-          <td>
-            <button type="button" class="btn btn-secondary btn-sm" data-tenant-view-rental="${window.AppUtils.escapeHtml(r.id)}">Detail</button>
-          </td>
-        </tr>`
-      )
-      .join('');
-
-    tbody.querySelectorAll('[data-tenant-view-rental]').forEach((btn) => {
-      btn.addEventListener('click', () =>
-        openTenantRentalDetailModal(btn.dataset.tenantViewRental)
-      );
-    });
-  } catch (err) {
-    window.AppUtils.showAlert('tenantDashboardAlert', err.message, 'error');
   }
 }
 
@@ -256,7 +164,6 @@ async function initTenantProfilePage() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  initTenantDashboardPage();
   initTenantRentalsHistoryPage();
   initTenantProfilePage();
 });

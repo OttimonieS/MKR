@@ -1,117 +1,7 @@
 /**
- * Modul frontend Admin untuk Dashboard Admin, Verifikasi Pendaftar Penyewa, dan 4 Jenis Laporan.
+ * Modul frontend Admin untuk Verifikasi Pendaftar Penyewa dan 4 Jenis Laporan.
  * @module frontend/admin
  */
-
-/* ==================== Dashboard Admin ==================== */
-
-/**
- * Memuat ringkasan metrik KPI aktual dan tabel garasi yang sedang disewa hari ini
- * pada halaman public/admin/dashboard.html.
- *
- * @returns {Promise<void>}
- */
-async function initAdminDashboardPage() {
-  const statsContainer = document.getElementById('adminDashboardStats');
-  if (!statsContainer) {
-    return;
-  }
-
-  const user = await window.AppUtils.requirePageAuth('ADMIN');
-  if (!user) {
-    return;
-  }
-
-  try {
-    const [statsRes, activeRes] = await Promise.all([
-      window.AppUtils.apiRequest('/api/reports/dashboard'),
-      window.AppUtils.apiRequest('/api/rentals/active'),
-    ]);
-
-    const s = statsRes.data;
-    document.getElementById('todayDateLabel').textContent =
-      `Tanggal Sistem (WIB): ${window.AppUtils.formatDateId(s.todayDate)}`;
-
-    statsContainer.innerHTML = `
-      <div class="stat-card">
-        <div class="stat-label">Total Garasi</div>
-        <div class="stat-value">${s.totalGarages}</div>
-        <div class="stat-sub">Available: ${s.availableGarages} • Used: ${s.usedGarages}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Penyewa Menunggu Verifikasi</div>
-        <div class="stat-value">${s.pendingTenants}</div>
-        <div class="stat-sub">Approved: ${s.approvedTenants} • Rejected: ${s.rejectedTenants}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Sewa Aktif Hari Ini</div>
-        <div class="stat-value">${s.activeRentalsToday}</div>
-        <div class="stat-sub">Total Transaksi Sewa: ${s.totalRentals} • Perpanjangan: ${s.totalExtensions}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Total Pendapatan</div>
-        <div class="stat-value">${window.AppUtils.formatRupiah(s.totalRevenue)}</div>
-        <div class="stat-sub">Sewa: ${window.AppUtils.formatRupiah(s.rentalRevenue)} • Perpanjangan: ${window.AppUtils.formatRupiah(s.extensionRevenue)}</div>
-      </div>
-    `;
-
-    const tbody = document.getElementById('activeRentalsTableBody');
-    const activeRentals = activeRes.data.rentals;
-
-    if (activeRentals.length === 0) {
-      tbody.innerHTML =
-        '<tr><td colspan="7" class="empty-state">Belum ada garasi yang sedang atau akan disewa.</td></tr>';
-      return;
-    }
-
-    tbody.innerHTML = activeRentals
-      .map(
-        (r) => `
-        <tr>
-          <td class="mono">${window.AppUtils.escapeHtml(r.garageId)}</td>
-          <td>${window.AppUtils.escapeHtml(r.tenant ? r.tenant.fullName : '-')}</td>
-          <td>${window.AppUtils.escapeHtml(r.vehicleTypeLabel)} (${window.AppUtils.escapeHtml(r.brand)} ${window.AppUtils.escapeHtml(r.model)})</td>
-          <td>${window.AppUtils.escapeHtml(r.plateNumber || '-')}</td>
-          <td>${window.AppUtils.escapeHtml(window.AppUtils.formatDateId(r.startDate))} s/d ${window.AppUtils.escapeHtml(window.AppUtils.formatDateId(r.endDate))}</td>
-          <td class="num">${window.AppUtils.escapeHtml(window.AppUtils.formatRupiah(r.grandTotalAmount))}</td>
-          <td>
-            <button type="button" class="btn btn-secondary btn-sm" data-view-rental="${window.AppUtils.escapeHtml(r.id)}">Detail</button>
-          </td>
-        </tr>`
-      )
-      .join('');
-
-    tbody.querySelectorAll('[data-view-rental]').forEach((btn) => {
-      btn.addEventListener('click', () =>
-        openAdminRentalDetailModal(btn.dataset.viewRental)
-      );
-    });
-  } catch (err) {
-    window.AppUtils.showAlert('adminDashboardAlert', err.message, 'error');
-  }
-}
-
-/**
- * Mengambil detail lengkap transaksi penyewaan dari backend dan menampilkannya pada modal detail.
- *
- * @param {string} rentalId - UUID transaksi penyewaan yang akan dilihat.
- * @returns {Promise<void>}
- */
-async function openAdminRentalDetailModal(rentalId) {
-  const modalBody = document.getElementById('rentalDetailModalBody');
-  if (!modalBody) {
-    return;
-  }
-  modalBody.innerHTML = '<p>Memuat detail transaksi...</p>';
-  window.AppUtils.openModal('rentalDetailModal');
-
-  try {
-    const res = await window.AppUtils.apiRequest(`/api/rentals/${rentalId}`);
-    modalBody.innerHTML = window.AppUtils.buildRentalDetailHtml(res.data);
-  } catch (err) {
-    modalBody.innerHTML = `<div class="alert alert-error">${window.AppUtils.escapeHtml(err.message)}</div>`;
-  }
-}
 
 /* ==================== Verifikasi Penyewa ==================== */
 
@@ -656,7 +546,6 @@ async function initAdminReportsPage() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  initAdminDashboardPage();
   initAdminTenantsPage();
   initAdminReportsPage();
 });

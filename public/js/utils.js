@@ -258,7 +258,7 @@ async function requirePageAuth(expectedRole) {
 
     if (expectedRole && user.role !== expectedRole) {
       window.location.href =
-        user.role === 'ADMIN' ? '/admin/dashboard.html' : '/tenant/dashboard.html';
+        user.role === 'ADMIN' ? '/admin/garages.html' : '/tenant/new-rental.html';
       return null;
     }
 

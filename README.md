@@ -41,8 +41,8 @@ Detail skenario White Box dan Black Box tersedia di [docs/testing.md](docs/testi
 .
 ├── public/                     # Frontend Desktop (HTML5, CSS3, Vanilla JS)
 │   ├── index.html
-│   ├── admin/                  # dashboard, garages, tenants, extensions, reports
-│   ├── tenant/                 # register, dashboard, new-rental, rentals, profile
+│   ├── admin/                  # garages, tenants, extensions, reports
+│   ├── tenant/                 # register, new-rental, rentals, profile
 │   ├── css/style.css
 │   └── js/                     # utils, auth, admin, garage, rental, tenant
 ├── src/                        # Backend Node.js & Express.js

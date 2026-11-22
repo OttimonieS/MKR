@@ -41,7 +41,7 @@ SQLite Database (src/database/db.js)         → 8 tabel relasional sesuai ERD d
 2. **Login & Logout** (`/index.html` → `POST /api/auth/login`, `POST /api/auth/logout`)
    - Mendukung login Admin dan Penyewa menggunakan email dan password.
    - Token JWT disimpan pada cookie sesi.
-   - Sistem mengarahkan pengguna otomatis ke Dashboard Admin (`/admin/dashboard.html`) atau Dashboard Penyewa (`/tenant/dashboard.html`).
+   - Sistem mengarahkan pengguna otomatis ke halaman Manajemen Garasi Admin (`/admin/garages.html`) atau halaman Sewa Garasi Baru Penyewa (`/tenant/new-rental.html`).
 3. **Otorisasi Berbasis Role & Status Verifikasi**
    - Setiap endpoint backend dilindungi middleware `authenticate`, `requireRole(...)`, dan `requireApprovedTenant`.
    - Penyewa berstatus `PENDING` atau `REJECTED` diblokir oleh backend (`403 Forbidden`) apabila mencoba membuat penyewaan garasi.
@@ -50,10 +50,7 @@ SQLite Database (src/database/db.js)         → 8 tabel relasional sesuai ERD d
 
 ### B. Fitur Admin
 
-1. **Dashboard Admin** (`/admin/dashboard.html`)
-   - Menampilkan metrik aktual dari database: Total Garasi (`AVAILABLE` & `USED`), jumlah pendaftar `PENDING`/`APPROVED`/`REJECTED`, jumlah sewa aktif hari ini, dan total pendapatan (sewa + perpanjangan).
-   - Menampilkan tabel daftar garasi yang sedang disewa pada hari ini beserta tombol **Detail** transaksi.
-2. **Manajemen Garasi Massal & Generator ID Otomatis** (`/admin/garages.html` → `POST /api/garages/batch`, `GET /api/garages`)
+1. **Manajemen Garasi Massal & Generator ID Otomatis** (`/admin/garages.html` → `POST /api/garages/batch`, `GET /api/garages`)
    - Admin dapat membuat garasi secara berkelompok dengan mengisi: Tipe Garasi (`BIKE`, `CAR`, `EV` pada tabel `garage_types`), Jumlah Garasi (maksimal 999 unit per tipe), Harga Sewa Harian (`garage_types.daily_rate`), dan Harga Pengisian Listrik per kWh (`garage_types.er_per_kwh`, khusus `EV`).
    - Format ID garasi otomatis per tipe:
      - **Garasi Sepeda (`BIKE`)**: `S001`, `S002`, …, `S999`
@@ -86,9 +83,7 @@ SQLite Database (src/database/db.js)         → 8 tabel relasional sesuai ERD d
 
 ### C. Fitur Penyewa (Tenant)
 
-1. **Dashboard Penyewa** (`/tenant/dashboard.html`)
-   - Menampilkan status verifikasi akun (`PENDING`, `APPROVED`, atau `REJECTED`), jumlah garasi aktif yang sedang disewa, total transaksi, total pengeluaran, dan daftar transaksi terbaru.
-2. **Sewa Garasi Baru (Khusus Penyewa `APPROVED`)** (`/tenant/new-rental.html` → `GET /api/rentals/config`, `GET /api/garages/available`, `POST /api/rentals/preview`, `POST /api/rentals`)
+1. **Sewa Garasi Baru (Khusus Penyewa `APPROVED`)** (`/tenant/new-rental.html` → `GET /api/rentals/config`, `GET /api/garages/available`, `POST /api/rentals/preview`, `POST /api/rentals`)
    - **Detail Kendaraan**: memilih tipe kendaraan (`Sepeda`, `Sepeda Motor`, `Mobil`, `Mobil Listrik`), merek, model, nomor plat (tidak diperlukan khusus `Sepeda`), dan kapasitas baterai kWh (khusus `Mobil Listrik`).
    - **Kompatibilitas Otomatis & Validasi Backend**:
      - Sepeda & Sepeda Motor → hanya **Garasi Sepeda**
@@ -136,7 +131,6 @@ SQLite Database (src/database/db.js)         → 8 tabel relasional sesuai ERD d
 | `GET /api/rentals/:id` | Admin / Pemilik | Detail transaksi penyewaan beserta histori perpanjangan |
 | `POST /api/rentals/:id/extend/preview` | Admin | Pratinjau tambahan hari dan biaya perpanjangan |
 | `POST /api/rentals/:id/extend` | Admin | Menyimpan perpanjangan sewa + upload bukti bayar |
-| `GET /api/reports/dashboard` | Admin / Penyewa | Metrik KPI dashboard sesuai role |
 | `GET /api/reports/monthly` | Admin | Laporan penyewaan & pendapatan per bulan dalam tahun tertentu |
 | `GET /api/reports/daily` | Admin | Laporan penyewaan & pendapatan per hari dalam bulan tertentu |
 | `GET /api/reports/by-garage-type` | Admin | Laporan penyewaan & pendapatan per tipe garasi |

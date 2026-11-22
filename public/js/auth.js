@@ -13,9 +13,9 @@ async function redirectIfAuthenticated() {
   try {
     const res = await window.AppUtils.apiRequest('/api/auth/me');
     if (res.data && res.data.role === 'ADMIN') {
-      window.location.href = '/admin/dashboard.html';
+      window.location.href = '/admin/garages.html';
     } else if (res.data && res.data.role === 'TENANT') {
-      window.location.href = '/tenant/dashboard.html';
+      window.location.href = '/tenant/new-rental.html';
     }
   } catch {
     // Pengguna belum login; tetap berada di halaman autentikasi
@@ -54,9 +54,9 @@ function initLoginPage() {
 
       const user = res.data.user;
       if (user.role === 'ADMIN') {
-        window.location.href = '/admin/dashboard.html';
+        window.location.href = '/admin/garages.html';
       } else {
-        window.location.href = '/tenant/dashboard.html';
+        window.location.href = '/tenant/new-rental.html';
       }
     } catch (err) {
       window.AppUtils.showAlert('authAlert', err.message, 'error');

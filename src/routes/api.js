@@ -54,8 +54,7 @@ function createApiRouter({ controllers, authMiddleware, uploadPaymentProof }) {
   router.post('/rentals/:id/extend', authenticate, adminOnly, uploadPaymentProof, rental.extendRental);
   router.get('/rentals/:id', authenticate, rental.getRentalDetail);
 
-  // Dashboard & Laporan
-  router.get('/reports/dashboard', authenticate, report.getDashboard);
+  // Laporan (Admin)
   router.get('/reports/monthly', authenticate, adminOnly, report.getMonthlyReport);
   router.get('/reports/daily', authenticate, adminOnly, report.getDailyReport);
   router.get('/reports/by-garage-type', authenticate, adminOnly, report.getGarageTypeReport);
