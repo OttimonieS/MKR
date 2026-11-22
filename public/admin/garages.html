@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manajemen Garasi — Garage Rental Management System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-title">Garage Rental</div>
+        <div class="sidebar-brand-role">Panel Admin</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/admin/dashboard.html" class="nav-link">Dashboard</a>
+        <a href="/admin/garages.html" class="nav-link active">Manajemen Garasi</a>
+        <a href="/admin/tenants.html" class="nav-link">Verifikasi Penyewa</a>
+        <a href="/admin/extensions.html" class="nav-link">Perpanjangan Sewa</a>
+        <a href="/admin/reports.html" class="nav-link">Laporan</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" id="logoutBtn" class="nav-link nav-link-logout">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <h1 class="topbar-title">Manajemen Garasi</h1>
+        <div class="topbar-meta">
+          <span class="user-pill" id="currentUserDisplay">Admin</span>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <div id="garagePageAlert" class="alert hidden" role="alert"></div>
+
+        <section id="sequenceSummary" class="stats-grid stats-grid-3"></section>
+
+        <div class="grid-sidebar-form">
+          <section class="card">
+            <div class="card-header">
+              <h2 class="card-title">Buat Garasi Massal</h2>
+            </div>
+            <div class="card-body">
+              <div id="garageFormAlert" class="alert hidden" role="alert"></div>
+
+              <form id="createGarageBatchForm">
+                <div class="form-group">
+                  <label class="form-label" for="garageType">Tipe Garasi</label>
+                  <select id="garageType" name="garageType" class="form-select" required>
+                    <option value="BIKE">Garasi Sepeda (BIKE — Prefix S)</option>
+                    <option value="CAR">Garasi Mobil (CAR — Prefix C)</option>
+                    <option value="EV">Garasi Mobil Listrik (EV — Prefix E)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="quantity">Jumlah Garasi</label>
+                  <input
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    class="form-control"
+                    min="1"
+                    max="999"
+                    value="1"
+                    required
+                  >
+                  <span class="form-hint">Maksimum total 999 unit per tipe garasi. ID dibuat otomatis secara berurutan.</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="dailyRate">Harga Sewa Harian (Rp)</label>
+                  <input
+                    type="number"
+                    id="dailyRate"
+                    name="dailyRate"
+                    class="form-control"
+                    min="1"
+                    step="any"
+                    placeholder="Contoh: 100000"
+                    required
+                  >
+                  <span class="form-hint">Harga sewa bulanan otomatis 25 × harga sewa harian.</span>
+                </div>
+
+                <div id="electricityRateGroup" class="form-group hidden">
+                  <label class="form-label" for="electricityRatePerKwh">Harga Pengisian Listrik per kWh (Rp)</label>
+                  <input
+                    type="number"
+                    id="electricityRatePerKwh"
+                    name="electricityRatePerKwh"
+                    class="form-control"
+                    min="1"
+                    step="any"
+                    placeholder="Contoh: 2500"
+                  >
+                  <span class="form-hint">Khusus untuk Garasi Mobil Listrik.</span>
+                </div>
+
+                <button type="submit" id="createGarageBtn" class="btn btn-primary btn-block">
+                  Buat Garasi
+                </button>
+              </form>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h2 class="card-title">Daftar Garasi</h2>
+              <div class="filter-bar">
+                <div class="form-group" style="min-width:150px;">
+                  <select id="filterGarageType" class="form-select">
+                    <option value="">Semua Tipe</option>
+                    <option value="BIKE">Garasi Sepeda</option>
+                    <option value="CAR">Garasi Mobil</option>
+                    <option value="EV">Garasi Mobil Listrik</option>
+                  </select>
+                </div>
+                <div class="form-group" style="min-width:140px;">
+                  <select id="filterGarageStatus" class="form-select">
+                    <option value="">Semua Status</option>
+                    <option value="AVAILABLE">AVAILABLE</option>
+                    <option value="USED">USED</option>
+                  </select>
+                </div>
+                <div class="form-group" style="min-width:140px;">
+                  <input type="text" id="filterGarageSearch" class="form-control" placeholder="Cari ID (mis. C001)">
+                </div>
+                <button type="button" id="filterGarageBtn" class="btn btn-secondary">Filter</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-wrapper">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>ID Garasi</th>
+                      <th>Tipe Garasi</th>
+                      <th class="num">Tarif Harian</th>
+                      <th class="num">Tarif Bulanan (25×)</th>
+                      <th class="num">Tarif Listrik</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="garagesTableBody">
+                    <tr><td colspan="6" class="empty-state">Memuat data garasi...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/garage.js"></script>
+</body>
+</html>

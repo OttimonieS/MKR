@@ -1,0 +1,180 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+
+abstract class User {
+    -id: String
+    -email: String
+    -_passwordHash: String
+    -role: String
+    -createdAt: String
+    +getPasswordHash(): String
+    +toJSON(): Object
+}
+
+class Tenant {
+    -nik: String
+    -fullName: String
+    -phone: String
+    -approvalStatus: String
+    +isApproved(): Boolean
+    +canRent(): Boolean
+    +toJSON(): Object
+}
+
+class Admin {
+    -fullName: String
+    +toJSON(): Object
+}
+
+class GarageTypeConfig {
+    -typeId: Number
+    -name: String
+    -codePrefix: String
+    -dailyRate: Number
+    -erPerKwh: Number
+    +getMonthlyRate(): Number
+    +toJSON(): Object
+}
+
+class GarageSequence {
+    -typeId: Number
+    -garageType: String
+    -lastNumber: Number
+    +{static} formatId(garageType: String, sequenceNumber: Number): String
+    +generateNextId(): String
+}
+
+class Garage {
+    -id: String
+    -typeId: Number
+    -garageType: String
+    -codePrefix: String
+    -dailyRate: Number
+    -electricityRatePerKwh: Number
+    -status: String
+    -createdAt: String
+    +getStatus(): String
+    +isAvailable(): Boolean
+    +getMonthlyRate(): Number
+    +toJSON(): Object
+}
+
+class Vehicle {
+    -vehicleType: String
+    -plateNumber: String
+    -brand: String
+    -model: String
+    -batteryCapacityKwh: Number
+    +validate(): Boolean
+    +validateCompatibility(garageType: String): Boolean
+    +isCompatibleWith(garageType: String): Boolean
+    +toJSON(): Object
+}
+
+class Rental {
+    -id: String
+    -tenantUserId: String
+    -garageId: String
+    -rentalType: String
+    -durationDays: Number
+    -startDate: String
+    -endDate: String
+    -rentalFee: Number
+    -electricityFee: Number
+    -totalAmount: Number
+    -paymentProofPath: String
+    -status: String
+    -createdAt: String
+    +calculateRentalFee(dailyRate: Number): Number
+    +calculateElectricityFee(garageType: String, rate: Number): Number
+    +calculateEndDate(): String
+    +getTotalDurationDays(): Number
+    +getTotalExtensionAmount(): Number
+    +toJSON(): Object
+}
+
+class RentalExtension {
+    -id: String
+    -rentalId: String
+    -adminUserId: String
+    -previousEndDate: String
+    -newEndDate: String
+    -addedDays: Number
+    -extensionAmount: Number
+    -paymentProofPath: String
+    -createdAt: String
+    +{static} calculateExtensionFee(previousEndDate: String, newEndDate: String, dailyRate: Number): Object
+    +toJSON(): Object
+}
+
+class AuthService {
+    +registerTenant(payload: Object): Tenant
+    +authenticate(email: String, password: String): Object
+    +signToken(user: User): String
+    +verifyToken(token: String): User
+    +listTenants(filters: Object): Tenant[]
+    +verifyTenant(tenantUserId: String, decision: String): Tenant
+}
+
+class GarageService {
+    +generateGarageId(garageType: String, sequenceNumber: Number): String
+    +createGarageBatch(payload: Object): Garage[]
+    +syncStatuses(): Object
+    +listGarages(filters: Object): Object
+    +getGarageById(garageId: String): Garage
+    +getAvailableGarages(query: Object): Object
+    +validateCompatibility(vehicleType: String, garageType: String): Boolean
+}
+
+class RentalService {
+    +getRentalConfig(): Object
+    +previewRentalCost(payload: Object): Object
+    +createRental(tenantUserId: String, payload: Object, paymentProofFilename: String): Rental
+    +getTenantRentals(tenantUserId: String): Rental[]
+    +getRentalDetail(rentalId: String, requestingUser: User): Rental
+    +getActiveRentalsToday(): Object
+    +getAllRentals(filters: Object): Rental[]
+    +previewExtensionCost(rentalId: String, newEndDate: String): Object
+    +extendRental(rentalId: String, adminUserId: String, newEndDate: String, paymentProofFilename: String): Object
+    +calculateEndDate(startDate: String, durationDays: Number): String
+    +calculateRentalFee(rentalType: String, durationDays: Number, dailyRate: Number): Number
+    +calculateElectricityFee(vehicleType: String, garageType: String, battery: Number, rate: Number): Number
+    +calculateExtensionFee(previousEndDate: String, newEndDate: String, dailyRate: Number): Object
+}
+
+class ReportService {
+    +getMonthlyReport(year: Number): Object
+    +getDailyReport(year: Number, month: Number, includeEmptyDays: Boolean): Object
+    +getGarageTypeReport(filters: Object): Object
+    +getTenantReport(filters: Object): Object
+    +getAdminDashboardStats(): Object
+    +getTenantDashboardStats(tenantUserId: String): Object
+}
+
+User <|-- Tenant
+User <|-- Admin
+
+GarageTypeConfig "1" -- "1" GarageSequence : tracks
+GarageTypeConfig "1" -- "0..*" Garage : classifies
+
+Tenant "1" -- "0..*" Rental : creates
+Garage "1" -- "0..*" Rental : assigned to
+Rental "1" *-- "1" Vehicle : contains
+Rental "1" -- "0..*" RentalExtension : has
+Admin "1" -- "0..*" RentalExtension : processes
+
+AuthService ..> User
+AuthService ..> Tenant
+AuthService ..> Admin
+GarageService ..> Garage
+GarageService ..> GarageTypeConfig
+GarageService ..> GarageSequence
+RentalService ..> Rental
+RentalService ..> RentalExtension
+RentalService ..> Garage
+RentalService ..> Tenant
+ReportService ..> Rental
+ReportService ..> RentalExtension
+
+@enduml

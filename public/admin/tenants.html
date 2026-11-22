@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifikasi Penyewa — Garage Rental Management System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-title">Garage Rental</div>
+        <div class="sidebar-brand-role">Panel Admin</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/admin/dashboard.html" class="nav-link">Dashboard</a>
+        <a href="/admin/garages.html" class="nav-link">Manajemen Garasi</a>
+        <a href="/admin/tenants.html" class="nav-link active">Verifikasi Penyewa</a>
+        <a href="/admin/extensions.html" class="nav-link">Perpanjangan Sewa</a>
+        <a href="/admin/reports.html" class="nav-link">Laporan</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" id="logoutBtn" class="nav-link nav-link-logout">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <h1 class="topbar-title">Verifikasi Pendaftaran Penyewa</h1>
+        <div class="topbar-meta">
+          <span class="user-pill" id="currentUserDisplay">Admin</span>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <div id="tenantVerifyAlert" class="alert hidden" role="alert"></div>
+
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">Daftar Pendaftar Penyewa (Validasi NIK / KTP)</h2>
+            <div class="filter-bar">
+              <div class="form-group">
+                <select id="filterTenantStatus" class="form-select">
+                  <option value="">Semua Status</option>
+                  <option value="PENDING">PENDING</option>
+                  <option value="APPROVED">APPROVED</option>
+                  <option value="REJECTED">REJECTED</option>
+                </select>
+              </div>
+              <div class="form-group" style="min-width:220px;">
+                <input type="text" id="filterTenantSearch" class="form-control" placeholder="Cari nama, NIK, email...">
+              </div>
+              <button type="button" id="filterTenantBtn" class="btn btn-secondary">Cari</button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>NIK (Nomor KTP)</th>
+                    <th>Nama Lengkap</th>
+                    <th>Email</th>
+                    <th>Nomor Telepon</th>
+                    <th>Tanggal Daftar</th>
+                    <th>Status</th>
+                    <th>Aksi Verifikasi</th>
+                  </tr>
+                </thead>
+                <tbody id="tenantsTableBody">
+                  <tr><td colspan="7" class="empty-state">Memuat data penyewa...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmVerifyModal" class="modal-backdrop hidden">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>Konfirmasi Verifikasi Penyewa</h3>
+        <button type="button" class="modal-close" data-close-modal="confirmVerifyModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmVerifyText" style="margin:0;"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="confirmVerifyModal">Batal</button>
+        <button type="button" id="confirmVerifyBtn" class="btn btn-primary">Konfirmasi</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

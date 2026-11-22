@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perpanjangan Sewa — Garage Rental Management System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-title">Garage Rental</div>
+        <div class="sidebar-brand-role">Panel Admin</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/admin/dashboard.html" class="nav-link">Dashboard</a>
+        <a href="/admin/garages.html" class="nav-link">Manajemen Garasi</a>
+        <a href="/admin/tenants.html" class="nav-link">Verifikasi Penyewa</a>
+        <a href="/admin/extensions.html" class="nav-link active">Perpanjangan Sewa</a>
+        <a href="/admin/reports.html" class="nav-link">Laporan</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" id="logoutBtn" class="nav-link nav-link-logout">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <h1 class="topbar-title">Perpanjangan Sewa Garasi</h1>
+        <div class="topbar-meta">
+          <span id="extTodayLabel"></span>
+          <span class="user-pill" id="currentUserDisplay">Admin</span>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <div id="extensionAlert" class="alert hidden" role="alert"></div>
+
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">1. Pilih Garasi Disewa</h2>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>ID Garasi</th>
+                    <th>Penyewa</th>
+                    <th>Kendaraan</th>
+                    <th>Tanggal Mulai</th>
+                    <th>Tanggal Selesai Saat Ini</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="extActiveRentalsBody">
+                  <tr><td colspan="6" class="empty-state">Memuat garasi aktif...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">2. Form Perpanjangan Masa Sewa</h2>
+          </div>
+          <div class="card-body">
+            <div id="extFormPlaceholder" class="empty-state">
+              Klik tombol <strong>Pilih</strong> pada salah satu garasi aktif di atas untuk memproses perpanjangan sewa.
+            </div>
+
+            <div id="extFormContainer" class="hidden">
+              <div id="extSelectedInfo" style="margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #e2e8f0;"></div>
+
+              <div class="grid-2">
+                <form id="extendRentalForm" novalidate>
+                  <div class="form-group">
+                    <label class="form-label" for="extNewEndDate">Tanggal Selesai Baru</label>
+                    <input
+                      type="date"
+                      id="extNewEndDate"
+                      name="newEndDate"
+                      class="form-control"
+                      required
+                    >
+                    <span class="form-hint">Admin dapat memperpanjang berapa bulan pun selama lebih besar dari tanggal selesai saat ini.</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="extPaymentProof">Bukti Pembayaran Perpanjangan (Gambar)</label>
+                    <input
+                      type="file"
+                      id="extPaymentProof"
+                      name="paymentProof"
+                      class="form-control"
+                      accept="image/jpeg,image/png,image/webp"
+                      required
+                    >
+                    <span class="form-hint">Format: JPEG, PNG, atau WEBP (maksimal 5 MB).</span>
+                  </div>
+
+                  <button type="submit" id="extSubmitBtn" class="btn btn-primary btn-block">
+                    Simpan Perpanjangan Sewa
+                  </button>
+                </form>
+
+                <div>
+                  <h4 style="margin:0 0 10px;">Perhitungan Biaya Perpanjangan</h4>
+                  <div id="extCostPreview" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;"></div>
+                </div>
+              </div>
+
+              <div style="margin-top:24px;padding-top:18px;border-top:1px solid #e2e8f0;">
+                <h4 style="margin:0 0 10px;">Riwayat Perpanjangan Transaksi Ini</h4>
+                <div id="extHistorySection"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/rental.js"></script>
+</body>
+</html>

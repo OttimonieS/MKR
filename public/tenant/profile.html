@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil Penyewa — Garage Rental Management System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-title">Garage Rental</div>
+        <div class="sidebar-brand-role">Panel Penyewa</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/tenant/dashboard.html" class="nav-link">Dashboard</a>
+        <a href="/tenant/new-rental.html" class="nav-link">Sewa Garasi Baru</a>
+        <a href="/tenant/rentals.html" class="nav-link">Riwayat Sewa</a>
+        <a href="/tenant/profile.html" class="nav-link active">Profil</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" id="logoutBtn" class="nav-link nav-link-logout">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <h1 class="topbar-title">Profil Penyewa</h1>
+        <div class="topbar-meta">
+          <span class="user-pill" id="currentUserDisplay">Penyewa</span>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <div id="tenantProfileStatusBanner" class="alert hidden" role="alert"></div>
+
+        <section class="card" style="max-width:760px;">
+          <div class="card-header">
+            <h2 class="card-title">Informasi Identitas Penyewa</h2>
+          </div>
+          <div id="tenantProfileDetails" class="card-body">
+            <p>Memuat profil...</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/tenant.js"></script>
+</body>
+</html>

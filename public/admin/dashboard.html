@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Garage Rental Management System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-title">Garage Rental</div>
+        <div class="sidebar-brand-role">Panel Admin</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/admin/dashboard.html" class="nav-link active">Dashboard</a>
+        <a href="/admin/garages.html" class="nav-link">Manajemen Garasi</a>
+        <a href="/admin/tenants.html" class="nav-link">Verifikasi Penyewa</a>
+        <a href="/admin/extensions.html" class="nav-link">Perpanjangan Sewa</a>
+        <a href="/admin/reports.html" class="nav-link">Laporan</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" id="logoutBtn" class="nav-link nav-link-logout">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <h1 class="topbar-title">Dashboard Admin</h1>
+        <div class="topbar-meta">
+          <span id="todayDateLabel"></span>
+          <span class="user-pill" id="currentUserDisplay">Admin</span>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <div id="adminDashboardAlert" class="alert hidden" role="alert"></div>
+
+        <section id="adminDashboardStats" class="stats-grid"></section>
+
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">Daftar Garasi Disewa</h2>
+            <a href="/admin/extensions.html" class="btn btn-primary btn-sm">Kelola Perpanjangan</a>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>ID Garasi</th>
+                    <th>Penyewa</th>
+                    <th>Kendaraan</th>
+                    <th>Plat Nomor</th>
+                    <th>Periode Sewa</th>
+                    <th class="num">Total Biaya</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="activeRentalsTableBody">
+                  <tr><td colspan="7" class="empty-state">Memuat data...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="rentalDetailModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Detail Transaksi Penyewaan</h3>
+        <button type="button" class="modal-close" data-close-modal="rentalDetailModal">&times;</button>
+      </div>
+      <div id="rentalDetailModalBody" class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="rentalDetailModal">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riwayat Sewa — Garage Rental Management System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-title">Garage Rental</div>
+        <div class="sidebar-brand-role">Panel Penyewa</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/tenant/dashboard.html" class="nav-link">Dashboard</a>
+        <a href="/tenant/new-rental.html" class="nav-link">Sewa Garasi Baru</a>
+        <a href="/tenant/rentals.html" class="nav-link active">Riwayat Sewa</a>
+        <a href="/tenant/profile.html" class="nav-link">Profil</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" id="logoutBtn" class="nav-link nav-link-logout">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <h1 class="topbar-title">Riwayat Penyewaan Garasi</h1>
+        <div class="topbar-meta">
+          <span class="user-pill" id="currentUserDisplay">Penyewa</span>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <div id="tenantHistoryStatusBanner" class="alert hidden" role="alert"></div>
+        <div id="tenantHistoryAlert" class="alert hidden" role="alert"></div>
+
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">Daftar Transaksi Penyewaan Anda</h2>
+            <a href="/tenant/new-rental.html" class="btn btn-primary btn-sm">+ Sewa Garasi Baru</a>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>ID Garasi</th>
+                    <th>Tipe Garasi</th>
+                    <th>Kendaraan</th>
+                    <th>Periode Sewa</th>
+                    <th class="num">Biaya Sewa Awal</th>
+                    <th class="num">Biaya Perpanjangan</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tenantHistoryTableBody">
+                  <tr><td colspan="8" class="empty-state">Memuat riwayat penyewaan...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Rental Detail Modal -->
+  <div id="tenantRentalDetailModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Detail Transaksi Penyewaan</h3>
+        <button type="button" class="modal-close" data-close-modal="tenantRentalDetailModal">&times;</button>
+      </div>
+      <div id="tenantRentalDetailBody" class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="tenantRentalDetailModal">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/tenant.js"></script>
+</body>
+</html>

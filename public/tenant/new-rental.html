@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sewa Garasi Baru — Garage Rental Management System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-title">Garage Rental</div>
+        <div class="sidebar-brand-role">Panel Penyewa</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/tenant/dashboard.html" class="nav-link">Dashboard</a>
+        <a href="/tenant/new-rental.html" class="nav-link active">Sewa Garasi Baru</a>
+        <a href="/tenant/rentals.html" class="nav-link">Riwayat Sewa</a>
+        <a href="/tenant/profile.html" class="nav-link">Profil</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" id="logoutBtn" class="nav-link nav-link-logout">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <h1 class="topbar-title">Sewa Garasi Baru</h1>
+        <div class="topbar-meta">
+          <span class="user-pill" id="currentUserDisplay">Penyewa</span>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <div id="tenantApprovalGate" class="alert alert-warning hidden" role="alert"></div>
+        <div id="newRentalAlert" class="alert hidden" role="alert"></div>
+
+        <div id="newRentalContent" class="grid-rental-layout">
+          <section class="card">
+            <div class="card-header">
+              <h2 class="card-title">Formulir Penyewaan Garasi</h2>
+            </div>
+            <div class="card-body">
+              <form id="newRentalForm" novalidate>
+                <h4 style="margin:0 0 12px;">A. Detail Kendaraan</h4>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="vehicleType">Tipe Kendaraan</label>
+                    <select id="vehicleType" name="vehicleType" class="form-select" required>
+                      <option value="BICYCLE">Sepeda</option>
+                      <option value="MOTORCYCLE">Sepeda Motor</option>
+                      <option value="CAR">Mobil</option>
+                      <option value="ELECTRIC_CAR">Mobil Listrik</option>
+                    </select>
+                  </div>
+
+                  <div id="plateNumberGroup" class="form-group hidden">
+                    <label class="form-label" for="plateNumber">Nomor Plat Kendaraan</label>
+                    <input
+                      type="text"
+                      id="plateNumber"
+                      name="plateNumber"
+                      class="form-control"
+                      placeholder="Contoh: L 1234 AB"
+                    >
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="brand">Merek Kendaraan</label>
+                    <input
+                      type="text"
+                      id="brand"
+                      name="brand"
+                      class="form-control"
+                      placeholder="Contoh: Polygon / Honda / Hyundai"
+                      required
+                    >
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="model">Tipe / Model Kendaraan</label>
+                    <input
+                      type="text"
+                      id="model"
+                      name="model"
+                      class="form-control"
+                      placeholder="Contoh: Strattos / Civic / Ioniq 5"
+                      required
+                    >
+                  </div>
+                </div>
+
+                <div id="batteryCapacityGroup" class="hidden">
+                  <div class="form-group">
+                    <label class="form-label" for="batteryCapacityKwh">Kapasitas Baterai (kWh)</label>
+                    <input
+                      type="number"
+                      id="batteryCapacityKwh"
+                      name="batteryCapacityKwh"
+                      class="form-control"
+                      min="0.1"
+                      step="any"
+                      placeholder="Contoh: 100"
+                    >
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="currentBatteryPercent">Baterai Sekarang (%)</label>
+                    <input
+                      type="number"
+                      id="currentBatteryPercent"
+                      name="currentBatteryPercent"
+                      class="form-control"
+                      min="0"
+                      max="100"
+                      step="1"
+                      value="0"
+                      placeholder="Contoh: 70"
+                    >
+                    <span class="form-hint">Khusus mobil listrik (0–100%). Jika memilih Garasi Mobil Listrik, biaya pengisian dihitung dari sisa persen baterai menuju 100%.</span>
+                  </div>
+                </div>
+
+                <hr style="border:none;border-top:1px solid #e2e8f0;margin:18px 0;">
+                <h4 style="margin:0 0 12px;">B. Periode &amp; Garasi</h4>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="rentalType">Tipe Sewa</label>
+                    <select id="rentalType" name="rentalType" class="form-select" required>
+                      <option value="DAILY">Harian</option>
+                      <option value="MONTHLY">Bulanan (25 × Tarif Harian)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="durationDays">Durasi (Hari)</label>
+                    <input
+                      type="number"
+                      id="durationDays"
+                      name="durationDays"
+                      class="form-control"
+                      min="1"
+                      value="1"
+                      required
+                    >
+                    <span id="durationHint" class="form-hint"></span>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="startDate">Tanggal Mulai Sewa (Asia/Jakarta)</label>
+                    <input
+                      type="date"
+                      id="startDate"
+                      name="startDate"
+                      class="form-control"
+                      required
+                    >
+                    <span class="form-hint">Minimal tanggal hari ini (WIB). Batas durasi harian/bulanan otomatis mengikuti bulan tanggal mulai.</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="endDateDisplay">Tanggal Selesai (Otomatis)</label>
+                    <input type="text" id="endDateDisplay" class="form-control" readonly>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="compatibleGarageType">Tipe Garasi Kompatibel</label>
+                    <select id="compatibleGarageType" class="form-select" required></select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="garageId">Pilih Garasi Tersedia</label>
+                    <select id="garageId" name="garageId" class="form-select" required></select>
+                  </div>
+                </div>
+
+                <hr style="border:none;border-top:1px solid #e2e8f0;margin:18px 0;">
+                <h4 style="margin:0 0 12px;">C. Bukti Pelunasan</h4>
+
+                <div class="form-group">
+                  <label class="form-label" for="paymentProof">Upload Gambar Bukti Pelunasan</label>
+                  <input
+                    type="file"
+                    id="paymentProof"
+                    name="paymentProof"
+                    class="form-control"
+                    accept="image/jpeg,image/png,image/webp"
+                    required
+                  >
+                  <span class="form-hint">Format yang diterima: JPEG, PNG, atau WEBP (maksimal 5 MB).</span>
+                </div>
+
+                <button type="submit" id="submitRentalBtn" class="btn btn-primary btn-block">
+                  Simpan Transaksi Sewa
+                </button>
+              </form>
+            </div>
+          </section>
+
+          <aside class="card" style="position:sticky;top:84px;">
+            <div class="card-header">
+              <h2 class="card-title">Rincian Biaya Sewa</h2>
+            </div>
+            <div id="rentalCostSummary" class="card-body">
+              <p style="color:#64748b;margin:0;font-size:13px;">Memuat konfigurasi penyewaan...</p>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Transaction Success Modal -->
+  <div id="rentalSuccessModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Transaksi Penyewaan Berhasil</h3>
+        <button type="button" class="modal-close" data-close-modal="rentalSuccessModal">&times;</button>
+      </div>
+      <div id="rentalSuccessModalBody" class="modal-body"></div>
+      <div class="modal-footer">
+        <a href="/tenant/rentals.html" class="btn btn-secondary">Lihat Riwayat Sewa</a>
+        <button type="button" class="btn btn-primary" data-close-modal="rentalSuccessModal">Sewa Garasi Lagi</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/rental.js"></script>
+</body>
+</html>
