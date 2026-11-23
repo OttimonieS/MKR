@@ -328,7 +328,6 @@ class RentalController {
     this.createRental = this.createRental.bind(this);
     this.getMyRentals = this.getMyRentals.bind(this);
     this.getActiveRentals = this.getActiveRentals.bind(this);
-    this.getAllRentals = this.getAllRentals.bind(this);
     this.getRentalDetail = this.getRentalDetail.bind(this);
     this.previewExtension = this.previewExtension.bind(this);
     this.extendRental = this.extendRental.bind(this);
@@ -439,30 +438,6 @@ class RentalController {
           todayDate,
           rentals: rentals.map((r) => r.toJSON()),
         },
-      });
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  /**
-   * Menangani GET /api/rentals (khusus Admin) untuk menampilkan seluruh riwayat penyewaan di sistem.
-   *
-   * @param {import('express').Request} req - Request dengan filter opsional status dan garageType.
-   * @param {import('express').Response} res - Response JSON seluruh transaksi penyewaan.
-   * @param {import('express').NextFunction} next - Callback penerus error.
-   * @returns {void}
-   */
-  getAllRentals(req, res, next) {
-    try {
-      const rentals = this.rentalService.getAllRentals({
-        status: req.query.status || undefined,
-        garageType: req.query.garageType || undefined,
-      });
-
-      res.status(200).json({
-        success: true,
-        data: rentals.map((r) => r.toJSON()),
       });
     } catch (err) {
       next(err);

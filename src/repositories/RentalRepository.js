@@ -389,41 +389,6 @@ class RentalRepository {
   }
 
   /**
-   * Mengambil seluruh transaksi penyewaan di sistem dengan filter opsional status dan tipe garasi.
-   *
-   * @param {Object} [filters={}] - Filter opsional.
-   * @param {string} [filters.status] - Filter status transaksi ('ACTIVE' atau 'COMPLETED').
-   * @param {string} [filters.garageType] - Filter nama tipe garasi ('BIKE', 'CAR', 'EV').
-   * @returns {Rental[]} Daftar entitas Rental diurutkan dari yang terbaru.
-   */
-  listAll(filters = {}) {
-    const conditions = [];
-    const params = [];
-
-    if (filters.status) {
-      conditions.push('r.status = ?');
-      params.push(filters.status);
-    }
-    if (filters.garageType) {
-      conditions.push('gt.name = ?');
-      params.push(filters.garageType);
-    }
-
-    const whereClause =
-      conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
-
-    const rows = this.db
-      .prepare(
-        `${this.getBaseSelectSql()}
-         ${whereClause}
-         ORDER BY r.created_at DESC`
-      )
-      .all(...params);
-
-    return this.mapRentalRowsWithExtensions(rows);
-  }
-
-  /**
    * Mencatat riwayat perpanjangan sewa baru, mempertahankan previous_end_date di histori,
    * memperbarui end_date pada tabel rentals, dan memastikan bebas bentrok jadwal secara atomik.
    *

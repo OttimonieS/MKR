@@ -8,7 +8,7 @@ Aplikasi web manajemen penyewaan garasi kendaraan berbasis basis data relasional
 - **Backend**: Node.js, Express.js (`^4.21.2`), `cookie-parser` (`^1.4.7`), `jsonwebtoken` (`^9.0.2`), `multer` (`^2.5.0`).
 - **Database**: SQLite via `better-sqlite3` (`^12.0.0`) dengan 8 tabel relasional sesuai ERD (`PRAGMA foreign_keys = ON`, transaksi atomik).
 - **Testing**: `vitest` (`^3.0.5`) & `supertest` (`^7.0.0`) untuk White Box dan Black Box Testing.
-- **Documentation**: JSDoc bahasa Indonesia pada setiap function, Markdown, dan 3 diagram PlantUML (`docs/diagrams/`).
+- **Documentation**: JSDoc bahasa Indonesia pada setiap function dan diagram UML (`UML/`).
 
 ## 2. Cara Instalasi & Menjalankan
 
@@ -33,8 +33,6 @@ Buka browser di `http://localhost:3000`.
 npm test
 ```
 
-Detail skenario White Box dan Black Box tersedia di [docs/testing.md](docs/testing.md). Ringkasan fitur aplikasi tersedia di [docs/fitur-aplikasi.md](docs/fitur-aplikasi.md).
-
 ## 4. Struktur Project
 
 ```text
@@ -58,10 +56,6 @@ Detail skenario White Box dan Black Box tersedia di [docs/testing.md](docs/testi
 ├── tests/
 │   ├── unit/businessLogic.test.js
 │   └── integration/api.test.js
-├── docs/
-│   ├── diagrams/               # use-case.puml, class-diagram.puml, erd.puml
-│   ├── fitur-aplikasi.md
-│   └── testing.md
 ├── package.json
 ├── server.js
 └── README.md

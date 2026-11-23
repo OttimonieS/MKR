@@ -49,7 +49,6 @@ function createApiRouter({ controllers, authMiddleware, uploadPaymentProof }) {
   router.post('/rentals', authenticate, requireApprovedTenant, uploadPaymentProof, rental.createRental);
   router.get('/rentals/my', authenticate, tenantOnly, rental.getMyRentals);
   router.get('/rentals/active', authenticate, adminOnly, rental.getActiveRentals);
-  router.get('/rentals', authenticate, adminOnly, rental.getAllRentals);
   router.post('/rentals/:id/extend/preview', authenticate, adminOnly, rental.previewExtension);
   router.post('/rentals/:id/extend', authenticate, adminOnly, uploadPaymentProof, rental.extendRental);
   router.get('/rentals/:id', authenticate, rental.getRentalDetail);

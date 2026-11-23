@@ -40,7 +40,7 @@ function safeUnlink(filePath) {
 
 /**
  * Factory pembuat middleware unggah bukti pembayaran gambar (JPEG/PNG/WEBP, maks 5 MB)
- * dengan penamaan UUID unik serta validasi ketat kecocokan MIME terhadap magic bytes biner.
+ * dengan penamaan UUID unik serta filter MIME Multer.
  *
  * @param {Object} [options={}] - Konfigurasi penyimpanan dan batas ukuran unggahan.
  * @param {string} [options.uploadDir] - Direktori penyimpanan file gambar bukti pembayaran.
@@ -112,8 +112,7 @@ function createUploadMiddleware(options = {}) {
   }).single('paymentProof');
 
   /**
-   * Middleware Express untuk memproses unggahan tunggal `paymentProof`, menangani error ukuran/MIME,
-   * serta memverifikasi kecocokan signature biner (magic bytes) gambar asli.
+   * Middleware Express untuk memproses unggahan tunggal `paymentProof` serta menangani error ukuran/MIME.
    *
    * @param {import('express').Request} req - Objek request Express.
    * @param {import('express').Response} res - Objek response Express.

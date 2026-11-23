@@ -26,8 +26,6 @@ const {
   getMaxDailyDuration,
   calculateEndDate,
   validateRentalDuration,
-  calculateRentalFee,
-  calculateElectricityFee,
   calculateTotalRentalCost,
   calculateExtensionFee,
 } = require('../utils/rentalMath');
@@ -56,67 +54,6 @@ class RentalService {
     this.garageRepository = garageRepository;
     this.userRepository = userRepository;
     this.clock = clock;
-  }
-
-  /**
-   * Mendelegasikan perhitungan tanggal selesai sewa inklusif.
-   *
-   * @param {string} startDate - Tanggal mulai sewa (YYYY-MM-DD).
-   * @param {number} durationDays - Durasi penyewaan dalam hari.
-   * @returns {string} Tanggal selesai sewa (YYYY-MM-DD).
-   */
-  calculateEndDate(startDate, durationDays) {
-    return calculateEndDate(startDate, durationDays);
-  }
-
-  /**
-   * Mendelegasikan perhitungan biaya sewa dasar harian atau bulanan.
-   *
-   * @param {string} rentalType - Tipe sewa ('DAILY' atau 'MONTHLY').
-   * @param {number} durationDays - Durasi hari sewa.
-   * @param {number} dailyRate - Tarif sewa harian garasi.
-   * @returns {number} Biaya sewa dasar.
-   */
-  calculateRentalFee(rentalType, durationDays, dailyRate) {
-    return calculateRentalFee(rentalType, durationDays, dailyRate);
-  }
-
-  /**
-   * Mendelegasikan perhitungan biaya pengisian listrik mobil listrik berdasarkan kapasitas & persentase baterai sekarang.
-   *
-   * @param {string} vehicleType - Tipe kendaraan.
-   * @param {string} garageType - Tipe garasi.
-   * @param {number|null} batteryCapacityKwh - Kapasitas baterai dalam kWh.
-   * @param {number|null} electricityRatePerKwh - Tarif pengisian listrik per kWh.
-   * @param {number|null} [currentBatteryPercent=0] - Persentase baterai saat ini (0–100%).
-   * @returns {number} Biaya pengisian listrik.
-   */
-  calculateElectricityFee(
-    vehicleType,
-    garageType,
-    batteryCapacityKwh,
-    electricityRatePerKwh,
-    currentBatteryPercent = 0
-  ) {
-    return calculateElectricityFee(
-      vehicleType,
-      garageType,
-      batteryCapacityKwh,
-      electricityRatePerKwh,
-      currentBatteryPercent
-    );
-  }
-
-  /**
-   * Mendelegasikan perhitungan biaya perpanjangan sewa garasi.
-   *
-   * @param {string} previousEndDate - Tanggal selesai saat ini (YYYY-MM-DD).
-   * @param {string} newEndDate - Tanggal selesai baru (YYYY-MM-DD).
-   * @param {number} dailyRate - Harga sewa harian garasi.
-   * @returns {Object} Rincian lengkap biaya perpanjangan bernilai positif.
-   */
-  calculateExtensionFee(previousEndDate, newEndDate, dailyRate) {
-    return calculateExtensionFee(previousEndDate, newEndDate, dailyRate);
   }
 
   /**
@@ -400,18 +337,6 @@ class RentalService {
     this.garageRepository.syncStatuses(todayDate);
     const rentals = this.rentalRepository.listActiveOnDate(todayDate);
     return { todayDate, rentals };
-  }
-
-  /**
-   * Mengambil seluruh transaksi penyewaan di sistem dengan filter opsional (khusus Admin).
-   *
-   * @param {Object} [filters={}] - Filter opsional (status, garageType).
-   * @returns {import('../models/Rental')[]} Daftar transaksi penyewaan.
-   */
-  getAllRentals(filters = {}) {
-    const todayDate = getTodayInJakarta(this.clock());
-    this.garageRepository.syncStatuses(todayDate);
-    return this.rentalRepository.listAll(filters);
   }
 
   /**
